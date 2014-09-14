@@ -1,6 +1,6 @@
 # A sample Gemfile
 source "https://rubygems.org"
-ruby "2.0.0"
+ruby "2.1.2"
 
 gem "rails", '~> 4.0.0'
 
@@ -56,20 +56,20 @@ end
 group :development do
   gem 'sqlite3'
   gem 'mailcatcher'
-  
+
   # Better error output
   gem 'better_errors'
   gem 'binding_of_caller'
   # gem "rails-i18n-debug"
   # chrome debugging extension https://github.com/dejan/rails_panel
   gem 'meta_request'
-  
+
   # Get infos when not using proper eager loading
   gem 'bullet'
 
   # Hide assets requests in log
   gem 'quiet_assets'
-  
+
   # Deploy with Capistrano
   gem 'capistrano', '~> 3.2.0', require: false
   gem 'capistrano-rvm', require: false
