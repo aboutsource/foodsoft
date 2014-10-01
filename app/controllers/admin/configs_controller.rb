@@ -14,15 +14,18 @@ class Admin::ConfigsController < Admin::BaseController
     @keys = FoodsoftConfig.keys.select {|k| FoodsoftConfig.allowed_key?(k)}.sort
   end
 
+  def edit
+    @foodsoft_config = FoodsoftConfig.new
+  end
+
   def update
-    ActiveRecord::Base.transaction do
-      # TODO support nested configuration keys
-      params[:config].each do |key, val|
-        FoodsoftConfig[key] = val
-      end
+    @foodsoft_config = FoodsoftConfig.new(params.require(:foodsoft_config).permit(:name, :homepage))
+    if @foodsoft_config.save
+      flash[:notice] = I18n.t('admin.configs.update.notice')
+      redirect_to action: 'show'
+    else
+      render :edit
     end
-    flash[:notice] = I18n.t('admin.configs.update.notice')
-    redirect_to action: 'show'
   end
 
   protected

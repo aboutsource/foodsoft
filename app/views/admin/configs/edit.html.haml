@@ -1,0 +1,9 @@
+- title 'Edit the foodsoft configuration', false
+
+= simple_form_for @foodsoft_config, url: admin_foodsoft_config_path do |f|
+
+  = f.input :name, input_html: {class: 'input-xlarge'} # required: true
+  = f.input :homepage, as: :url, input_html: {class: 'input-xlarge'}
+
+  .form-actions
+    = f.submit class: 'btn btn-primary'

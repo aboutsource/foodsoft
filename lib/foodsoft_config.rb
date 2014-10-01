@@ -257,6 +257,41 @@ class FoodsoftConfig
       end
     end
 
-
   end
+
+  ## Allow ActiveRecord like model validations
+
+  include ActiveModel::Model
+
+  attr_accessor :name, :homepage
+
+  # Todo: Add all config keys, we wanna have present in our model.
+  validates_presence_of :name, :homepage
+
+  def self.attributes
+    FoodsoftConfig.to_hash
+      .delete_if { |k,v| !FoodsoftConfig.allowed_key?(k) || !k.in?(%w(name homepage)) }
+  end
+
+  def initialize(attributes={})
+    # Load attributes from current scope
+    super self.class.attributes.merge(attributes)
+  end
+
+  def persisted?
+    true
+  end
+
+  def save
+    if valid?
+      ActiveRecord::Base.transaction do
+        # TODO support nested configuration keys
+        self.class.attributes.each do |key, val|
+          FoodsoftConfig[key] = send(key)
+        end
+      end
+    end
+  end
+
+
 end

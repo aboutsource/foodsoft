@@ -42,7 +42,7 @@ Foodsoft::Application.routes.draw do
 
         get :receive
         post :receive
-        
+
         get :receive_on_order_article_create
         get :receive_on_order_article_update
       end
@@ -98,10 +98,10 @@ Foodsoft::Application.routes.draw do
       get :copy
       collection do
         get :derive
-        
+
         get :index_on_stock_article_create
         get :index_on_stock_article_update
-        
+
         get :show_on_stock_article_update
       end
     end
@@ -112,7 +112,7 @@ Foodsoft::Application.routes.draw do
       resources :deliveries do
         collection do
           post :add_stock_change
-          
+
           get :form_on_stock_article_create
           get :form_on_stock_article_update
         end
@@ -150,7 +150,7 @@ Foodsoft::Application.routes.draw do
           get :confirm
           patch :close
           patch :close_direct
-          
+
           get :new_on_order_article_create
           get :new_on_order_article_update
         end
@@ -185,6 +185,8 @@ Foodsoft::Application.routes.draw do
       resource :config, :only => [:show, :update] do
         get :list
       end
+
+      resource :foodsoft_config, only: [:edit, :update], controller: 'configs'
     end
 
     ############## Feedback
