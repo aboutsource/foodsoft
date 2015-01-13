@@ -15,7 +15,8 @@ class HomeController < ApplicationController
   end
 
   def update_profile
-    if @current_user.update_attributes(params[:user])
+    if @current_user.update_attributes(user_params)
+      @current_user.ordergroup.update_attributes(ordergroup_params) if ordergroup_params
       session[:locale] = @current_user.locale
       redirect_to my_profile_url, notice: I18n.t('home.changes_saved')
     else
@@ -46,20 +47,35 @@ class HomeController < ApplicationController
       @financial_transactions = @financial_transactions.where("note LIKE ?", "%#{params[:query]}%") if params[:query].present?
 
     else
-      redirect_to root_path, :alert => I18n.t('home.no_ordergroups')
+      redirect_to root_path, alert: I18n.t('home.no_ordergroups')
     end
   end
 
   # cancel personal memberships direct from the myProfile-page
   def cancel_membership
-    membership = Membership.find(params[:membership_id])
-    if membership.user == current_user
-      membership.destroy
-      flash[:notice] = I18n.t('home.ordergroup_cancelled', :group => membership.group.name)
+    if params[:membership_id]
+      membership = @current_user.memberships.find!(params[:membership_id])
     else
-      flash[:error] = I18n.t('errors.general')
+      membership = @current_user.memberships.find_by_group_id!(params[:group_id])
     end
-    redirect_to my_profile_path
+    membership.destroy
+    redirect_to my_profile_path, notice: I18n.t('home.ordergroup_cancelled', :group => membership.group.name)
+  end
+
+  protected
+
+  def user_params
+    params
+      .require(:user)
+      .permit(:first_name, :last_name, :email, :phone,
+              :password, :password_confirmation).merge(params[:user].slice(:settings_attributes))
+  end
+
+  def ordergroup_params
+    params
+      .require(:user)
+      .require(:ordergroup)
+      .permit(:contact_address)
   end
 
 end

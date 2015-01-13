@@ -2,11 +2,11 @@
 source "https://rubygems.org"
 ruby "2.1.2"
 
-gem "rails", '~> 4.0.0'
+gem "rails", '~> 4.1'
 
 
-gem 'sass-rails',   '~> 4.0.0'
-gem 'coffee-rails', '~> 4.0.0'
+gem 'sass-rails', '>= 4.0' # version to avoid bundle getting confused
+gem 'coffee-rails'
 gem 'less-rails'
 gem 'uglifier', '>= 1.0.3'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -18,7 +18,7 @@ gem 'select2-rails'
 gem 'bootstrap-datepicker-rails'
 gem 'date_time_attribute'
 gem 'rails-assets-listjs', '0.2.0.beta.4' # remember to maintain list.*.js plugins and template engines on update
-gem 'i18n-js', git: 'git://github.com/fnando/i18n-js.git' # to avoid US-ASCII js.erb error
+gem 'i18n-js', '~> 3.0.0.rc8'
 gem 'rails-i18n'
 
 gem 'mysql2'
@@ -27,12 +27,10 @@ gem 'prawn-table'
 gem 'haml-rails'
 gem 'kaminari'
 gem 'simple_form'
-gem 'client_side_validations', git: 'git://github.com/bcardarella/client_side_validations.git', branch: '4-0-beta'
-gem 'client_side_validations-simple_form', git: 'git://github.com/saveritemedical/client_side_validations-simple_form.git'
 gem 'inherited_resources'
 gem 'localize_input', git: "git://github.com/bennibu/localize_input.git"
 gem 'daemons'
-gem 'twitter-bootstrap-rails'
+gem 'twitter-bootstrap-rails', '~> 2.2.8'
 gem 'simple-navigation'
 gem 'simple-navigation-bootstrap'
 gem 'ransack'
@@ -43,11 +41,13 @@ gem 'whenever', require: false # For defining cronjobs, see config/schedule.rb
 gem 'protected_attributes'
 gem 'ruby-units'
 gem 'attribute_normalizer'
+gem 'ice_cube', github: 'wvengen/ice_cube', branch: 'issues/50-from_ical-rebased' # fork until merged
+gem 'recurring_select'
 
 # we use the git version of acts_as_versioned, and need to include it in this Gemfile
-gem 'acts_as_versioned', git: 'git://github.com/technoweenie/acts_as_versioned.git'
-gem 'foodsoft_wiki', path: 'lib/foodsoft_wiki'
-gem 'foodsoft_messages', path: 'lib/foodsoft_messages'
+gem 'acts_as_versioned', github: 'technoweenie/acts_as_versioned'
+gem 'foodsoft_wiki', path: 'plugins/wiki'
+gem 'foodsoft_messages', path: 'plugins/messages'
 
 group :production do
   gem 'exception_notification'
@@ -56,6 +56,10 @@ end
 group :development do
   gem 'sqlite3'
   gem 'mailcatcher'
+
+  # allow to use `debugger` https://github.com/conradirwin/pry-rescue
+  gem 'pry-rescue'
+  gem 'pry-stack_explorer'
 
   # Better error output
   gem 'better_errors'
@@ -85,7 +89,7 @@ end
 
 group :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails', '~> 4.0'
+  gem 'factory_girl_rails'
   gem 'faker'
   gem 'capybara'
   # webkit and poltergeist don't seem to work yet
