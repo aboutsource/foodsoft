@@ -1,11 +1,10 @@
 # A sample Gemfile
 source "https://rubygems.org"
-ruby "2.1.2"
 
-gem "rails", '~> 4.1'
+gem "rails", '~> 4.2'
 
 
-gem 'sass-rails', '>= 4.0' # version to avoid bundle getting confused
+gem 'sass-rails'
 gem 'coffee-rails'
 gem 'less-rails'
 gem 'uglifier', '>= 1.0.3'
@@ -15,6 +14,7 @@ gem 'therubyracer', platforms: :ruby
 
 gem 'jquery-rails'
 gem 'select2-rails'
+gem 'rails_tokeninput'
 gem 'bootstrap-datepicker-rails'
 gem 'date_time_attribute'
 gem 'rails-assets-listjs', '0.2.0.beta.4' # remember to maintain list.*.js plugins and template engines on update
@@ -27,11 +27,11 @@ gem 'prawn-table'
 gem 'haml-rails'
 gem 'kaminari'
 gem 'simple_form'
-gem 'inherited_resources'
+gem 'inherited_resources', git: 'git://github.com/josevalim/inherited_resources.git', branch: 'rails-4-2'
 gem 'localize_input', git: "git://github.com/bennibu/localize_input.git"
 gem 'daemons'
 gem 'twitter-bootstrap-rails', '~> 2.2.8'
-gem 'simple-navigation'
+gem 'simple-navigation', '~> 3.14.0' # 3.x for simple_navigation_bootstrap
 gem 'simple-navigation-bootstrap'
 gem 'ransack'
 gem 'acts_as_tree'
@@ -43,11 +43,17 @@ gem 'ruby-units'
 gem 'attribute_normalizer'
 gem 'ice_cube', github: 'wvengen/ice_cube', branch: 'issues/50-from_ical-rebased' # fork until merged
 gem 'recurring_select'
+gem 'roo', '~> 1.13.2'
+gem 'spreadsheet'
 
 # we use the git version of acts_as_versioned, and need to include it in this Gemfile
 gem 'acts_as_versioned', github: 'technoweenie/acts_as_versioned'
 gem 'foodsoft_wiki', path: 'plugins/wiki'
 gem 'foodsoft_messages', path: 'plugins/messages'
+
+# plugins not enabled by default
+#gem 'foodsoft_uservoice', path: 'plugins/uservoice'
+
 
 group :production do
   gem 'exception_notification'
@@ -56,6 +62,7 @@ end
 group :development do
   gem 'sqlite3'
   gem 'mailcatcher'
+  gem 'web-console', '~> 2.0'
 
   # allow to use `debugger` https://github.com/conradirwin/pry-rescue
   gem 'pry-rescue'
@@ -97,8 +104,9 @@ group :test do
   gem 'database_cleaner'
   gem 'connection_pool'
   # need to include rspec components before i18n-spec or rake fails in test environment
-  gem 'rspec-core', '~> 2.99'  # almost ready for RSpec 3
+  gem 'rspec-core', '~> 3.2'
   gem 'rspec-rerun'
+  gem 'rspec-legacy_formatters'
   gem 'i18n-spec'
   # code coverage
   gem 'simplecov', require: false

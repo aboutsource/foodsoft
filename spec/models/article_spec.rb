@@ -85,6 +85,7 @@ describe Article do
 
     it 'does not need to synchronise an imported article' do
       article = shared_article.build_new_article(supplier)
+      article.article_category = create :article_category
       expect(article.shared_article_changed?).to be_falsey
     end
 
@@ -102,7 +103,7 @@ describe Article do
       article.update_attributes! updated_article.attributes.reject{|k,v| k=='id' or k=='type'}
       expect(article.unit).to eq '200g'
       expect(article.unit_quantity).to eq 5
-      expect(article.price).to be_within(1e-3).of(shared_article.price/5)
+      expect(article.price).to be_within(0.005).of(shared_article.price/5)
     end
 
     it 'does not synchronise when it has no order number' do

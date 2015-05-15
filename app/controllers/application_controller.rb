@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   helper_method :available_locales
 
   protect_from_forgery
-  before_filter  :select_foodcoop, :authenticate, :store_controller, :items_per_page
+  before_filter  :select_foodcoop, :authenticate, :set_user_last_activity, :store_controller, :items_per_page
   after_filter  :remove_controller
   around_filter :set_time_zone, :set_currency
 
@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   def current_user
     # check if there is a valid session and return the logged-in user (its object)
-    if session[:user_id] and params[:foodcoop]
+    if session[:user_id] && params[:foodcoop]
       # for shared-host installations. check if the cookie-subdomain fits to request.
       @current_user ||= User.find_by_id(session[:user_id]) if session[:scope] == FoodsoftConfig.scope
     end
@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
   # if fails the user will redirected to startpage
   def authenticate_membership_or_admin(group_id = params[:id])
     @group = Group.find(group_id)
-    unless @group.member?(@current_user) or @current_user.role_admin?
+    unless @group.member?(@current_user) || @current_user.role_admin?
       redirect_to root_path, alert: I18n.t('application.controller.error_members_only')
     end
   end
@@ -113,6 +113,13 @@ class ApplicationController < ActionController::Base
       end
     else
       authenticate(role)
+    end
+  end
+
+  def set_user_last_activity
+    if current_user && (session[:last_activity] == nil || session[:last_activity] < 1.minutes.ago)
+      current_user.update_attribute(:last_activity, Time.now)
+      session[:last_activity] = Time.now
     end
   end
 

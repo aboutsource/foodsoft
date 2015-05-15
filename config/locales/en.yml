@@ -149,6 +149,7 @@ en:
       user:
         email: Email
         first_name: First name
+        last_activity: Last activity
         last_login: Last login
         last_name: Last name
         name: Name
@@ -357,6 +358,7 @@ en:
       error_parse: "%{msg} ... in line %{line}"
       error_update: 'An error occured when updating article ''%{article}'': %{msg}'
       parse_upload:
+        no_file: Please select a file to upload.
         notice: "%{count} articles were succesfully analysed."
       sync:
         notice: Catalog is up to date
@@ -406,7 +408,7 @@ en:
       error_nosel: You have selected no articles
     parse_upload:
       body: "<p><i>Please verify the articles.</i></p> <p><i>Warning, at the moment there is no check for duplicate articles.</i></p>"
-      submit: Upload
+      submit: Process upload
       title: Upload articles
     sync:
       outlist:
@@ -433,13 +435,26 @@ en:
           other: There are %{count} articles to add.
         title: Add new ...
     upload:
-      body: <p>The file has to be a text file with the ending <tt>.csv</tt>. The first line will be ignored when imported, fields are separated by semicolons (';'), and text may be enclosed by double quotation marks ("text..."). Default character-set is utf-8.</p> <p>Column order:</p>
       fields:
         reserved: "(Reserved)"
         status: Status (x=skip)
       file_label: Please choose a compatible file
+      options:
+        convert_units: Keep current units, recompute unit quantity and price (like synchronize).
+        outlist_absent: Delete articles not in uploaded file.
+      sample:
+        juices: Juices
+        nuts: Nuts
+        organic: Organic
+        supplier_1: Nuttyfarm
+        supplier_2: Brownfields
+        supplier_3: Greenfields
+        tomato_juice: Tomato juice
+        walnuts: Walnuts
       submit: Upload file
-      title: "%{supplier} / upload articles"
+      text_1: 'Here you can upload a spreadsheet to update the articles of %{supplier}. Excel (xls, xlsx) and OpenOffice (ods) spreadsheets are accepted, as well as comma-separated files (csv, columns separated by ";" with utf-8 encoding). Only the first sheet will be imported, and columns must be in the following order:'
+      text_2: The rows shown here are examples. When there is an "x" in the first column, the article is outlisted and will be removed. This allows you to edit the spreadsheet and quickly remove many articles at once, for example when articles become unavailable with the supplier. The category will be matched to your Foodsoft category list (both by category name and import names).
+      title: Upload articles of %{supplier}
   config:
     hints:
       applepear_url: Website where the apple and pear system for tasks is explained.
@@ -944,11 +959,11 @@ en:
       groups:
         cancel: Leave group
         cancel_confirm: Are you sure you want to leave this group?
-        invite: Invite new members
+        invite: Invite new member
         title: You are member of the groups
       title: My Profile
       user:
-        since: "(member since: %{when})"
+        since: "(member for %{when})"
         title: "%{user}"
     start_nav:
       admin: Administration
@@ -976,7 +991,7 @@ en:
     errors:
       already_member: is already in use. Person is already a member of this Foodcoop.
     modal_form:
-      body: "<p>Here you can invite a person to a group <b>%{group}</b>, who is not yet a member of the foodcoop.</p> <p>After being added for the first time, the person is automatically a member of this group.</p>"
+      body: "<p>Here you can invite someone who isn't part of the foodcoop to join your ordergroup <b>%{group}</b>. After the invitation is accepted, the person will be able to add (and remove) articles to your order.</p> <p>This is a great way to introduce someone to the foodcoop, or to order with multiple people in the same household.</p>"
       title: Invite person
     new:
       action: Send invite
@@ -1005,7 +1020,7 @@ en:
     logo: "<span>food</span>soft"
   lib:
     order_pdf:
-      page: Page %{number}
+      page: Page %{number} of %{count}
   login:
     accept_invitation:
       body: "<p>You are invited to be part of the foodcoop %{foodcoop} as a member of the group <b>%{group}</b>.</p> <p>If you want to participate, please fill in this form.</p> <p>Naturally, your information wll not be shared with third parties for any reason. You can decide how much of your personal information should be visible for everyone. 'All' means all Foodcoop-members. Please note that the administrators do have access to your information.</p>"
@@ -1123,6 +1138,7 @@ en:
       reply_indent: "> %{line}"
       reply_subject: 'Re: %{subject}'
     new:
+      hint_private: Message doesn’t show in Foodsoft mail inbox
       list:
         desc: 'Please send messages to all using the mailing-list: %{list}'
         mail: for example with an email to %{email}.
@@ -1140,6 +1156,7 @@ en:
       sent_on: 'Sent:'
       subject: 'Subject:'
       title: Show message
+      to: 'To:'
   messages_mailer:
     foodsoft_message:
       footer: |
@@ -1343,21 +1360,25 @@ en:
     form:
       help:
         bold: bold
-        external_link_ex: External page
-        external_links: External links
+        external_link_ex: External link
+        external_links: External
         heading: level %{level}
         headings: Heading
+        image_link_title: Image title
+        image_links: Images
         italic: italic
+        link_lists: More on lists
+        link_table: Table formatting
+        link_templates: Templates
+        link_variables: Foodsoft variables
         list_item_1: First list item
         list_item_2: Second list item
-        noformat: No wiki-formatting
+        noformat: No formatting
         ordered_list: Numbered list
         section_block: Block formatting
         section_character: Character formatting
         section_link: Link formatting
-        section_table: Table formatting
-        see_tables: see %{tables_link}
-        tables_link: Tables
+        section_more: More topics
         text: text
         title: Quick formatting help
         unordered_list: Item list
@@ -1381,6 +1402,11 @@ en:
     title: Title
     update:
       notice: Page was updated
+    variables:
+      description: Variables return information from somewhere else. When you use the variable, it will be replaced by its value when displayed. Foodsoft has a number of pre-defined variables, such as the name and address of your foodcoop, the software version, and the number of members and suppliers. See the table below for all variables. You can use these in wiki pages as well as in the footer (from the configuration screen).
+      title: Foodsoft variables
+      value: Current value
+      variable: Variable
     version:
       author: 'Author: %{user}'
       date_format: "%a, %d-%m-%Y, %H:%M"
@@ -1435,8 +1461,6 @@ en:
         unit: e.g. KG or 1L or 500g
       article_category:
         description: comma-separated list of category names recognised at import/synchronisation
-      message:
-        private: Message doesn’t show in Foodsoft mail inbox
       order_article:
         units_to_order: If you change the total amount of delivered units, you also have to change individual group amounts by clicking on the article name. They will not be automatically recalculated and so ordergroups may be accounted for articles that were not delivered!
         update_global_price: Also update the price of future orders
@@ -1599,8 +1623,10 @@ en:
     destroy:
       notice: Task has been deleted
     edit:
+      submit_periodic: Save recurring task
       title: Edit task
-      warning_periodic: "<strong>Warning:</strong> This task is part of a group of <em>weekly tasks</em>. When saving it will be excluded from the group and it will be converted to a <em>regular task</em>."
+      title_periodic: Edit recurring task
+      warning_periodic: "<strong>Warning:</strong> This task is part of a group of <em>recurring tasks</em>. When saving it will be excluded from the group and it will be converted to a <em>regular task</em>."
     error_not_found: No workgroup found
     form:
       search:
@@ -1608,7 +1634,7 @@ en:
         noresult: No user found
         placeholder: Search ...
       submit:
-        periodic: Save weekly task
+        periodic: Save recurring task
     index:
       show_group_tasks: Show group tasks
       title: Tasks
@@ -1629,15 +1655,18 @@ en:
       new_task: Create new task
       pages: Pages
     new:
-      title: Create new tasks
-    repeated: Task is repeated weekly
+      submit_periodic: Create recurring task
+      title: Create new task
+    repeated: Task is recurring
     set_done:
       notice: The state of the task has been updated
     show:
       accept_task: Accept task
       confirm_delete_group: Really delete this and all subsequent tasks?
       confirm_delete_single: Are you sure you want to delete the task?
+      confirm_delete_single_from_group: Are you sure you want to delete this task (and keep related recurring tasks)?
       delete_group: Delete task and subsequent
+      edit_group: Edit recurring
       hours: "%{count}h"
       mark_done: Mark task as done
       reject_task: Reject task
@@ -1658,6 +1687,7 @@ en:
     actions: Actions
     cancel: Cancel
     close: Close
+    copy: Copy
     delete: Delete
     edit: Edit
     marks:

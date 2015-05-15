@@ -8,7 +8,7 @@ namespace :foodsoft do
       rake_say "Send notifications for #{task.name} to .."
       for user in task.users
         begin
-          Mailer.upcoming_tasks(user, task).deliver if user.settings.notify['upcoming_tasks'] == 1
+          Mailer.upcoming_tasks(user, task).deliver_now if user.settings.notify['upcoming_tasks'] == 1
         rescue
           rake_say "deliver aborted for #{user.email}.."
         end
@@ -25,7 +25,7 @@ namespace :foodsoft do
           for user in workgroup.users
             if user.settings.messages['send_as_email'] == "1" && !user.email.blank?
               begin
-                Mailer.not_enough_users_assigned(task, user).deliver
+                Mailer.not_enough_users_assigned(task, user).deliver_now
               rescue
                 rake_say "deliver aborted for #{user.email}"
               end
@@ -42,7 +42,7 @@ namespace :foodsoft do
       if tg.has_next_task?
         create_until = Date.today + FoodsoftConfig[:tasks_upfront_days].to_i + 1
         rake_say "creating until #{create_until}"
-        while tg.next_task_date.nil? or tg.next_task_date < create_until
+        while tg.next_task_date.nil? || tg.next_task_date < create_until
           tg.create_next_task
         end
       end

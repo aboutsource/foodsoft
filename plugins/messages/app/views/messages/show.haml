@@ -6,6 +6,17 @@
       %td= t '.from'
       %td=h @message.sender_name
     %tr
+      %td= t '.to'
+      %td= @message.recipients.map {|e| e.name}.join(', ')
+    - if @message.group
+      %tr
+        %td= t '.group'
+        %td= @message.group.name
+    - if @message.reply_to
+      %tr
+        %td= t '.reply_to'
+        %td= link_to @message.reply_to_message.subject, message_path(@message.reply_to)
+    %tr
       %td= t '.subject'
       %td
         %b=h @message.subject

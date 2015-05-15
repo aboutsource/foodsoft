@@ -1,10 +1,10 @@
 Foodsoft
 =========
-[![Build Status](https://travis-ci.org/foodcoops/foodsoft.png?branch=master)](https://travis-ci.org/foodcoops/foodsoft)
-[![Coverage Status](https://coveralls.io/repos/foodcoops/foodsoft/badge.png?branch=master)](https://coveralls.io/r/foodcoops/foodsoft?branch=master)
-[![Docs Status](http://inch-ci.org/github/foodcoops/foodsoft.png?branch=master)](http://inch-ci.org/github/foodcoops/foodsoft)
-[![Code Climate](https://codeclimate.com/github/foodcoops/foodsoft.png)](https://codeclimate.com/github/foodcoops/foodsoft)
-[![Dependency Status](https://gemnasium.com/foodcoops/foodsoft.png)](https://gemnasium.com/foodcoops/foodsoft)
+[![Build Status](https://travis-ci.org/foodcoops/foodsoft.svg?branch=master)](https://travis-ci.org/foodcoops/foodsoft)
+[![Coverage Status](https://coveralls.io/repos/foodcoops/foodsoft/badge.svg?branch=master)](https://coveralls.io/r/foodcoops/foodsoft?branch=master)
+[![Docs Status](http://inch-ci.org/github/foodcoops/foodsoft.svg?branch=master)](http://inch-ci.org/github/foodcoops/foodsoft)
+[![Code Climate](https://codeclimate.com/github/foodcoops/foodsoft.svg)](https://codeclimate.com/github/foodcoops/foodsoft)
+[![Dependency Status](https://gemnasium.com/foodcoops/foodsoft.svg)](https://gemnasium.com/foodcoops/foodsoft)
 [![Documentation](http://b.repl.ca/v1/yard-docs-blue.png)](http://rubydoc.info/github/foodcoops/foodsoft/frames)
 
 Web-based software to manage a non-profit food coop (product catalog, ordering, accounting, job scheduling).
@@ -37,3 +37,4 @@ License
 
 GPL version 3 or later, please see [LICENSE](LICENSE.md) for the full text.
 
+Thanks to [Icons8](http://icons8.com/) for letting us use their icons.

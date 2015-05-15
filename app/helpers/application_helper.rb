@@ -16,9 +16,9 @@ module ApplicationHelper
   end
 
   def format_datetime_timespec(time, format)
-    I18n.l(time, :format => format) unless (time.nil? or format.nil?)
+    I18n.l(time, :format => format) unless (time.nil? || format.nil?)
   end
-  
+
   # Creates ajax-controlled-links for pagination
   def pagination_links_remote(collection, options = {})
     per_page = options[:per_page] || @per_page
@@ -26,7 +26,7 @@ module ApplicationHelper
     params = params.merge({:per_page => per_page})
     paginate collection, :params => params, :remote => true
   end
-  
+
   # Link-collection for per_page-options when using the pagination-plugin
   def items_per_page(options = {})
     per_page_options = options[:per_page_options] || [20, 50, 100, 500]
@@ -92,26 +92,26 @@ module ApplicationHelper
     if options[:short]
       desc = options[:desc]
       desc ||= model.human_attribute_name("#{attribute}_desc".to_sym, options.merge({fallback: true, default: '', count: 2}))
-      desc.blank? and desc = s
+      desc.blank? && desc = s
       sshort = model.human_attribute_name("#{attribute}_short".to_sym, options.merge({fallback: true, default: '', count: 2}))
       s = raw "<abbr title='#{desc}'>#{sshort}</abbr>" unless sshort.blank?
     end
     s
   end
-  
+
   # Generates a link to the top of the website
   def link_to_top
     link_to '#' do
       content_tag :i, nil, class: 'icon-arrow-up icon-large'
     end
   end
-  
+
   # Returns the weekday. 0 is sunday, 1 is monday and so on
   def weekday(dayNumber)
     weekdays = I18n.t('date.day_names')
     return weekdays[dayNumber]
   end
-  
+
   # to set a title for both the h1-tag and the title in the header
   def title(page_title, show_title = true)
     content_for(:title) { page_title.to_s }
@@ -135,7 +135,7 @@ module ApplicationHelper
     options[:alt] ||= icons[name][:alt]
     options[:title] ||= icons[name][:title]
     options.merge!({:size => '16x16',:border => "0"})
-    
+
     image_tag icons[name][:file], options
   end
 
@@ -149,21 +149,22 @@ module ApplicationHelper
     link_to(text, options[:url], remote_options.merge(options))
   end
 
-  def format_roles(record)
-    roles = []
-    roles << I18n.t('helpers.application.role_admin') if record.role_admin?
-    roles << I18n.t('helpers.application.role_finance') if record.role_finance?
-    roles << I18n.t('helpers.application.role_suppliers') if record.role_suppliers?
-    roles << I18n.t('helpers.application.role_article_meta') if record.role_article_meta?
-    roles << I18n.t('helpers.application.role_orders') if record.role_orders?
-    roles.join(', ')
+  def format_roles(record, icon=false)
+    roles = %w(suppliers article_meta orders finance admin)
+    roles.select! {|role| record.send "role_#{role}?"}
+    names = Hash[roles.map{|r| [r, I18n.t("helpers.application.role_#{r}")]}]
+    if icon
+      roles.map{|r| image_tag("role-#{r}.png", size: '22x22', border: 0, alt: names[r], title: names[r])}.join('&nbsp;').html_safe
+    else
+      roles.map{|r| names[r]}.join(', ')
+    end
   end
 
   def link_to_gmaps(address)
     link_to h(address), "http://maps.google.com/?q=#{h(address)}", :title => I18n.t('helpers.application.show_google_maps'),
       :target => "_blank"
   end
-  
+
   # Returns flash messages html.
   #
   # Use this instead of twitter-bootstrap's +bootstrap_flash+ method for safety, until
@@ -183,11 +184,11 @@ module ApplicationHelper
     end
     flash_messages.join("\n").html_safe
   end
-  
+
   # render base errors in a form after failed validation
   # http://railsapps.github.io/twitter-bootstrap-rails.html
   def base_errors resource
-    return '' if (resource.errors.empty?) or (resource.errors[:base].empty?)
+    return '' if resource.errors.empty? || resource.errors[:base].empty?
     messages = resource.errors[:base].map { |msg| content_tag(:li, msg) }.join
     render :partial => 'shared/base_errors', :locals => {:error_messages => messages}
   end
@@ -197,7 +198,7 @@ module ApplicationHelper
     if user.nil?
       "?"
     elsif FoodsoftConfig[:use_nick]
-      if options[:full] and options[:markup]
+      if options[:full] && options[:markup]
         raw "<b>#{h user.nick}</b> (#{h user.first_name} #{h user.last_name})"
       elsif options[:full]
         "#{user.nick} (#{user.first_name} #{user.last_name})"
@@ -217,12 +218,26 @@ module ApplicationHelper
 
   # allow truncate to add title when tooltip option is given
   def truncate(text, options={}, &block)
-    return text if not text or text.length <= (options[:length] or 30)
+    return text if !text || text.length <= (options[:length] || 30)
     text_truncated = super(text, options, &block)
     if options[:tooltip]
       content_tag :span, text_truncated, title: text
     else
       text_truncated
+    end
+  end
+
+  # Expand variables in text
+  # @see Foodsoft::ExpansionVariables#expand
+  def expand(text, options={})
+    Foodsoft::ExpansionVariables.expand(text, options)
+  end
+
+  # @param dismiss [String, Symbol] Bootstrap dismiss value (modal, alert)
+  # @return [String] HTML for close button dismissing
+  def close_button(dismiss)
+    content_tag :button, type: 'button', class: 'close', data: {dismiss: dismiss} do
+      I18n.t('ui.marks.close').html_safe
     end
   end
 
@@ -238,5 +253,5 @@ module ApplicationHelper
       stylesheet_link_tag foodcoop_css_path, media: 'all'
     end
   end
-  
+
 end

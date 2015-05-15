@@ -10,18 +10,25 @@
         theme: 'facebook'
       });
 
-      $('#message_sent_to_all').on('touchclick', function() {
+      $('#message_sent_to_all').on('change', function() {
         if ($(this).is(':checked')) {
           $('#recipients').slideUp();
         } else {
           $('#recipients').slideDown();
         }
       });
+      // make sure state is correct when loading
+      $('#recipients').toggle(!$('#message_sent_to_all').is(':checked'));
     });
 
 - title t('.title')
 
 = simple_form_for @message do |f|
+  = f.hidden_field :reply_to
+
+  - if @message.reply_to
+    %p= t('.reply_to', link: link_to(t('.message'), message_path(@message.reply_to))).html_safe
+
   - if FoodsoftConfig[:mailing_list].blank?
     = f.input :sent_to_all, :as => :boolean
   - else
@@ -38,7 +45,7 @@
   #recipients
     = f.input :recipient_tokens, :input_html => { 'data-pre' => User.where(id: @message.recipients_ids).map(&:token_attributes).to_json }
     = f.input :group_id, :as => :select, :collection => Group.undeleted.order('type DESC', 'name ASC').reject { |g| g.memberships.empty? }
-  = f.input :private
+  = f.input :private, inline_label: t('.hint_private')
   = f.input :subject, input_html: {class: 'input-xxlarge'}
   = f.input :body, input_html: {class: 'input-xxlarge', rows: 13}
   .form-actions

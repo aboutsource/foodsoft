@@ -10,10 +10,12 @@ module OrdersHelper
   # @param order [Order]
   # @param document [String] Document to display, one of +groups+, +articles+, +fax+, +matrix+
   # @param text [String] Link text
+  # @param options [Hash] Options passed to +link_to+
   # @return [String] Link to order document
   # @see OrdersController#show
-  def order_pdf(order, document, text)
-    link_to text, order_path(order, document: document, format: :pdf), title: I18n.t('helpers.orders.order_pdf')
+  def order_pdf(order, document, text, options={})
+    options = options.merge(title: I18n.t('helpers.orders.order_pdf'))
+    link_to text, order_path(order, document: document, format: :pdf), options
   end
 
   def options_for_suppliers_to_select
@@ -48,12 +50,12 @@ module OrdersHelper
   #   Sensible in tables with multiple columns.
   # @return [String] Text showing unit and unit quantity when applicable.
   def pkg_helper(article, options={})
-    return '' if not article or article.unit_quantity == 1
+    return '' if !article || article.unit_quantity == 1
     uq_text = "× #{article.unit_quantity}"
     uq_text = content_tag(:span, uq_text, class: 'hidden-phone') if options[:soft_uq]
     if options[:plain]
       uq_text
-    elsif options[:icon].nil? or options[:icon]
+    elsif options[:icon].nil? || options[:icon]
       pkg_helper_icon(uq_text)
     else
       pkg_helper_icon(uq_text, tag: :span)
@@ -70,26 +72,26 @@ module OrdersHelper
     end
     content_tag(options[:tag], c, class: "package #{options[:class]}").html_safe
   end
-  
+
   def article_price_change_hint(order_article, gross=false)
     return nil if order_article.article.price == order_article.price.price
     title = "#{t('helpers.orders.old_price')}: #{number_to_currency order_article.article.price}"
     title += " / #{number_to_currency order_article.article.gross_price}" if gross
     content_tag(:i, nil, class: 'icon-asterisk', title: j(title)).html_safe
   end
-  
+
   def receive_input_field(form)
     order_article = form.object
-    units_expected = (order_article.units_billed or order_article.units_to_order) *
+    units_expected = (order_article.units_billed || order_article.units_to_order) *
       1.0 * order_article.article.unit_quantity / order_article.article_price.unit_quantity
-    
+
     input_classes = 'input input-nano units_received'
     input_classes += ' package' unless order_article.article_price.unit_quantity == 1
     input_html = form.text_field :units_received, class: input_classes,
       data: {'units-expected' => units_expected},
       disabled: order_article.result_manually_changed?,
       autocomplete: 'off'
-    
+
     if order_article.result_manually_changed?
       input_html = content_tag(:span, class: 'input-prepend intable', title: t('orders.edit_amount.field_locked_title', default: '')) {
         button_tag(nil, type: :button, class: 'btn unlocker') {
@@ -117,7 +119,7 @@ module OrdersHelper
   # @param order_or_supplier [Order, Supplier] Order or supplier to link to
   # @return [String] Link to order or supplier, showing its name.
   def supplier_link(order_or_supplier)
-    if order_or_supplier.kind_of?(Order) and order_or_supplier.stockit?
+    if order_or_supplier.kind_of?(Order) && order_or_supplier.stockit?
       link_to(order_or_supplier.name, stock_articles_path).html_safe
     else
       link_to(@order.supplier.name, supplier_path(@order.supplier)).html_safe
@@ -137,6 +139,20 @@ module OrdersHelper
       'unused'
     else
       'unavailable'
+    end
+  end
+
+  # Button for receiving an order.
+  #   If the order hasn't been received before, the button is shown in green.
+  # @param order [Order]
+  # @option options [String] :class Classes added to the button's class attribute.
+  # @return [String] Order receive button.
+  def receive_button(order, options={})
+    if order.stockit?
+      content_tag :div, t('orders.index.action_receive'), class: "btn disabled #{options[:class]}"
+    else
+      was_received = order.order_articles.where('units_received IS NOT NULL').any?
+      link_to t('orders.index.action_receive'), receive_order_path(order), class: "btn#{' btn-success' unless was_received} #{options[:class]}"
     end
   end
 end

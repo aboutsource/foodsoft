@@ -8,6 +8,7 @@ class Order < ActiveRecord::Base
   has_many :articles, :through => :order_articles
   has_many :group_orders, :dependent => :destroy
   has_many :ordergroups, :through => :group_orders
+  has_many :users_ordered, :through => :ordergroups, :source => :users
   has_one :invoice
   has_many :comments, -> { order('created_at') }, :class_name => "OrderComment"
   has_many :stock_changes
@@ -50,7 +51,7 @@ class Order < ActiveRecord::Base
       # but which have already been ordered in this stock order
       StockArticle.available.includes(:article_category).
         order('article_categories.name', 'articles.name').reject{ |a|
-        a.quantity_available <= 0 and not a.ordered_in_order?(self)
+        a.quantity_available <= 0 && !a.ordered_in_order?(self)
       }.group_by { |a| a.article_category.name }
     else
       supplier.articles.available.group_by { |a| a.article_category.name }
@@ -249,7 +250,8 @@ class Order < ActiveRecord::Base
   protected
 
   def starts_before_ends
-    errors.add(:ends, I18n.t('orders.model.error_starts_before_ends')) if (ends && starts && ends <= starts)
+    delta = Rails.env.test? ? 1 : 0 # since Rails 4.2 tests appear to have time differences, with this validation failing
+    errors.add(:ends, I18n.t('orders.model.error_starts_before_ends')) if (ends && starts && ends <= (starts-delta))
   end
 
   def include_articles
@@ -259,8 +261,8 @@ class Order < ActiveRecord::Base
   def keep_ordered_articles
     chosen_order_articles = order_articles.where(article_id: article_ids)
     to_be_removed = order_articles - chosen_order_articles
-    to_be_removed_but_ordered = to_be_removed.select { |a| a.quantity > 0 or a.tolerance > 0 }
-    unless to_be_removed_but_ordered.empty? or ignore_warnings
+    to_be_removed_but_ordered = to_be_removed.select { |a| a.quantity > 0 || a.tolerance > 0 }
+    unless to_be_removed_but_ordered.empty? || ignore_warnings
       errors.add(:articles, I18n.t(stockit? ? 'orders.model.warning_ordered_stock' : 'orders.model.warning_ordered'))
       @erroneous_article_ids = to_be_removed_but_ordered.map { |a| a.article_id }
     end

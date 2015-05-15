@@ -12,6 +12,7 @@ class OrderPdf < Prawn::Document
     super(options)
     @order = order
     @options = options
+    @first_page = true
   end
 
   def to_pdf
@@ -19,8 +20,18 @@ class OrderPdf < Prawn::Document
 
     # Define header
     repeat :all, dynamic: true do
-      draw_text title, size: fontsize(10), style: :bold, at: [bounds.left, bounds.top+20] if title # Header
-      draw_text I18n.t('lib.order_pdf.page', :number => page_number), size: fontsize(8), at: [bounds.left, bounds.bottom-10] # Footer
+      s = fontsize(8)
+      # header
+      bounding_box [bounds.left, bounds.top+s*2], width: bounds.width, height: s*1.2 do
+        text title, size: s, align: :center if title
+      end
+      # footer
+      bounding_box [bounds.left, bounds.bottom-s], width: bounds.width, height: s*1.2  do
+        text I18n.t('lib.order_pdf.page', number: page_number, count: page_count), size: s, align: :right
+      end
+      bounding_box [bounds.left, bounds.bottom-s], width: bounds.width, height: s*1.2  do
+        text I18n.l(Time.now, format: :long), size: s, align: :left
+      end
     end
 
     body  # Add content, which is defined in subclasses
@@ -50,6 +61,10 @@ class OrderPdf < Prawn::Document
 
   # add pagebreak or vertical whitespace, depending on configuration
   def down_or_page(space=10)
+    if @first_page
+      @first_page = false
+      return
+    end
     if pdf_add_page_breaks?
       start_new_page
     else
