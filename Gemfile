@@ -46,6 +46,7 @@ gem 'recurring_select'
 gem 'roo', '~> 2.0.0'
 gem 'roo-xls'
 gem 'spreadsheet'
+gem 'gaffe'
 
 # we use the git version of acts_as_versioned, and need to include it in this Gemfile
 gem 'acts_as_versioned', github: 'technoweenie/acts_as_versioned'
@@ -53,6 +54,7 @@ gem 'foodsoft_wiki', path: 'plugins/wiki'
 gem 'foodsoft_messages', path: 'plugins/messages'
 
 # plugins not enabled by default
+#gem 'foodsoft_current_orders', path: 'plugins/current_orders'
 #gem 'foodsoft_uservoice', path: 'plugins/uservoice'
 
 

@@ -54,11 +54,13 @@ module Admin::ConfigsHelper
       checked_value = options.delete(:checked_value) || 'true'
       unchecked_value = options.delete(:unchecked_value) || 'false'
       options[:checked] = 'checked' if v=options.delete(:value) && v!='false'
-      form.hidden_field(key, value: unchecked_value, as: :hidden) + form.check_box(key, options, checked_value, false)
+      # different key for hidden field so that allow clocking on label focuses the control
+      form.hidden_field(key, id: "#{key}_", value: unchecked_value, as: :hidden) + form.check_box(key, options, checked_value, false)
     elsif options[:as] == :select_recurring
       options[:value] = FoodsoftDateUtil.rule_from(options[:value])
       options[:rules] ||= []
       options[:rules].unshift options[:value] unless options[:value].blank?
+      options[:rules].push [I18n.t('recurring_select.not_recurring'), '{}'] if options.delete(:allow_blank) # blank after current value
       form.select_recurring key, options.delete(:rules).uniq, options
     else
       form.input_field key, options
@@ -73,7 +75,7 @@ module Admin::ConfigsHelper
     head = content_tag :label do
      lbl = options[:label] || config_input_label(form, key)
      field = config_input_field(form, key, as: :boolean, boolean_style: :inline,
-                                data: {toggle: 'collapse', target: "##{key}-fields"}) 
+                                data: {toggle: 'collapse', target: "##{key}-fields"})
      content_tag :h4 do
        # put in span to keep space for tooltip at right
        content_tag :span, (lbl + field).html_safe, config_input_tooltip_options(form, key, {})
@@ -108,6 +110,13 @@ module Admin::ConfigsHelper
     else
       value
     end
+  end
+
+  # @return [String] Tooltip element (span)
+  # @param form [ActionView::Helpers::FormBuilder] Form object.
+  # @param key [Symbol, String] Configuration key of a boolean (e.g. +use_messages+).
+  def config_tooltip(form, key, options={}, &block)
+    content_tag :span, config_input_tooltip_options(form, key, options), &block
   end
 
   private

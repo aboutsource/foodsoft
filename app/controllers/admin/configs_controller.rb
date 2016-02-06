@@ -40,10 +40,15 @@ class Admin::ConfigsController < Admin::BaseController
   # turn recurring rules into something palatable
   def parse_recurring_selects!(config)
     if config
-      for k in [:pickup, :ends] do
-        if config[k] && config[k][:recurr]
-          config[k][:recurr] = ActiveSupport::JSON.decode(config[k][:recurr])
-          config[k][:recurr] = FoodsoftDateUtil.rule_from(config[k][:recurr]).to_ical if config[k][:recurr]
+      for k in [:pickup, :boxfill, :ends] do
+        if config[k]
+          # allow clearing it using dummy value '{}' ('' would break recurring_select)
+          if config[k][:recurr].present? && config[k][:recurr] != '{}'
+            config[k][:recurr] = ActiveSupport::JSON.decode(config[k][:recurr])
+            config[k][:recurr] = FoodsoftDateUtil.rule_from(config[k][:recurr]).to_ical if config[k][:recurr]
+          else
+            config[k] = nil
+          end
         end
       end
     end
