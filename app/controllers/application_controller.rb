@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
     # check if there is a valid session and return the logged-in user (its object)
     if session[:user_id] && params[:foodcoop]
       # for shared-host installations. check if the cookie-subdomain fits to request.
-      @current_user ||= User.find_by_id(session[:user_id]) if session[:scope] == FoodsoftConfig.scope
+      @current_user ||= User.undeleted.find_by_id(session[:user_id]) if session[:scope] == FoodsoftConfig.scope
     end
   end
   helper_method :current_user
@@ -132,7 +132,13 @@ class ApplicationController < ActionController::Base
   #
   def require_plugin_enabled(plugin)
     unless plugin.enabled?
-      redirect_to root_path, alert: I18n.t('application.controller.error_plugin_disabled')
+      redirect_to root_path, alert: I18n.t('application.controller.error_feature_disabled')
+    end
+  end
+
+  def require_config_disabled(config)
+    if FoodsoftConfig[config]
+      redirect_to root_path, alert: I18n.t('application.controller.error_feature_disabled')
     end
   end
 

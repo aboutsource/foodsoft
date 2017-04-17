@@ -2,7 +2,7 @@
 class OrderMatrix < OrderPdf
 
   MAX_ARTICLES_PER_PAGE = 16 # How many order_articles shoud written on a page
-  
+
   def filename
     I18n.t('documents.order_matrix.filename', :name => @order.name, :date => @order.ends.to_date) + '.pdf'
   end
@@ -26,7 +26,7 @@ class OrderMatrix < OrderPdf
       order_articles_data << [a.article.name,
                               a.article.unit,
                               a.price.unit_quantity,
-                              number_with_precision(a.price.fc_price, precision: 2),
+                              number_with_precision(article_price(a), precision: 2),
                               a.units]
     end
 
@@ -62,7 +62,7 @@ class OrderMatrix < OrderPdf
 
       @order.group_orders.includes(:ordergroup).each do |group_order|
 
-        group_result = [group_order.ordergroup.name.truncate(20)]
+        group_result = [group_order.ordergroup_name.truncate(20)]
 
         for order_article in current_order_articles
           # get the Ordergroup result for this order_article
@@ -82,6 +82,19 @@ class OrderMatrix < OrderPdf
       end
 
     end
+  end
+
+  private
+
+  # Return price for article.
+  #
+  # This is a separate method so that plugins can override it.
+  #
+  # @param article [Article]
+  # @return [Number] Price to show
+  # @see https://github.com/foodcoops/foodsoft/issues/445
+  def article_price(article)
+    article.price.fc_price
   end
 
 end

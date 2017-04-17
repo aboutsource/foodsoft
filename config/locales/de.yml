@@ -37,6 +37,12 @@ de:
         delivered_on: Lieferdatum
         note: Notiz
         supplier: Lieferantin
+      document:
+        created_at: Erstellt am
+        created_by_user_id: Erstellt von
+        data: Daten
+        mime: MIME-Typ
+        name: Name
       financial_transaction:
         amount: Betrag
         created_on: Datum
@@ -54,13 +60,18 @@ de:
         total_price: Summe
       invoice:
         amount: Betrag
+        attachment: Anhang
+        created_at: Erstellt am
+        created_by: Erstellt von
         date: Rechnungsdatum
-        delivery: Lieferung
+        delete_attachment: Anhang löschen
+        deliveries: Lieferung
         deposit: Pfand berechnet
         deposit_credit: Pfand gutgeschrieben
+        net_amount: Pfandbereinigter Betrag
         note: Notiz
         number: Nummer
-        order: Bestellung
+        orders: Bestellung
         paid_on: Bezahlt am
         supplier: Lieferant
       message:
@@ -68,14 +79,16 @@ de:
         group_id: Gruppe
         private: Privat
         recipient_tokens: Empfänger_innen
-        sent_to_all: An alle Mitglieder schicken
+        send_to_all: An alle Mitglieder schicken
         subject: Betreff
       order:
+        boxfill: Kistenfüllen ab
         closed_by: Abgerechnet von
         created_by: Erstellt von
         ends: Endet am
         name: Lieferant
         note: Notiz
+        pickup: Abholung
         starts: Läuft vom
         status: Status
         supplier: Lieferant
@@ -96,6 +109,8 @@ de:
       ordergroup:
         account_balance: Kontostand
         available_funds: Verfügbares Guthaben
+        break: "(Letzte) Pause"
+        break_until: bis
         contact: Kontakt
         contact_address: Adresse
         contact_person: Kontaktperson
@@ -103,6 +118,7 @@ de:
         description: Beschreibung
         ignore_apple_restriction: Bestellstop bei zu wenig Äpfeln ignorieren
         last_order: Zuletst bestellt
+        last_user_activity: Zuletzt aktiv
         name: Name
         user_tokens: Mitglieder
       page:
@@ -127,6 +143,7 @@ de:
         delivery_days: Liefertage
         email: E-Mail
         fax: Fax
+        iban: IBAN
         is_subscribed: abonniert?
         min_order_quantity: Mindestbestellmenge
         min_order_quantity_short: Menge (mind.)
@@ -149,6 +166,7 @@ de:
       user:
         email: E-Mail
         first_name: Vorname
+        iban: IBAN
         last_activity: Letzte Aktivität
         last_login: Letzter login
         last_name: Nachname
@@ -167,6 +185,7 @@ de:
         role_admin: Administration
         role_article_meta: Artikeldatenbank
         role_finance: Finanzen
+        role_invoices: Rechnungen
         role_orders: Bestellverwaltung
         role_suppliers: Lieferanten
         user_tokens: Mitglieder
@@ -235,13 +254,15 @@ de:
         pdf_title: PDF-Dokumente
       tab_messages:
         emails_title: E-Mails versenden
+      tab_payment:
+        schedule_title: Bestellschema
       tab_tasks:
         periodic_title: Wiederkehrende Aufgaben
       tabs:
         title: Einstellungen
       update:
         notice: Einstellungen gespeichert.
-    confirm: Willst du %{name} wirklich löschen?
+    confirm: Bist Du sicher?
     ordergroups:
       destroy:
         error: 'Bestellgruppe konnte nicht als gelöscht markiert werden: %{error}'
@@ -269,17 +290,23 @@ de:
     users:
       controller:
         sudo_done: Du bist jetzt als Benutzer %{user} angemeldet. Sei vorsichtig und melde dich ab, wenn du fertig bist!
+      destroy:
+        error: 'Benutzer/in konnte nicht gelöscht werden: %{error}'
+        notice: Benutzer/in wurde gelöscht
       edit:
         title: Benutzer/in bearbeiten
       index:
         first_paragraph: Hier kannst du Benutzer/innen %{url}, bearbeiten und natürlich auch löschen.
         new_user: Neue/n Benutzer/in anlegen
         new_users: neu anlegen
+        show_deleted: Gelöschte Benutzer anzeigen
         title: Benutzer/innen verwalten
       new:
         title: Neue/n Benutzer/in anlegen
+      restore:
+        error: 'Benutzer/in konnte nicht wiederhergestellt werden: %{error}'
+        notice: Benutzer/in wurde wiederhergestellt
       show:
-        confirm_delete: Willst du den Benutzer %{user} wirklich löschen?
         confirm_sudo: Wenn du fortsetzt, dann wirst du als Benutzer %{user} angemeldet. Sei vorsichtig und melde dich ab, wenn du fertig bist!
         groupabos: Gruppenabos
         member_since: Mitglied seit %{time}
@@ -317,8 +344,8 @@ de:
       error_authn: Anmeldung erforderlich!
       error_denied: Du darfst die gewünschte Seite nicht sehen. Wenn Du denkst, dass Du dürfen solltest, frage eine/n Administrator/in, dass sie/er Dir die entsprechenden Rechte einräumt. Falls Du Zugang zu mehreren Benutzerkonten hast, möchtest Du Dich vielleicht %{sign_in}.
       error_denied_sign_in: als ein anderer Benutzer anmelden
+      error_feature_disabled: Diese Funktion ist derzeit nicht aktiviert.
       error_members_only: Diese Aktion ist nur für Mitglieder der Gruppe erlaubt!
-      error_plugin_disabled: Diese Funktion ist derzeit nicht aktiviert.
       error_token: Zugriff verweigert (ungültiger Token)!
   article_categories:
     create:
@@ -328,7 +355,6 @@ de:
     edit:
       title: Kategorie ändern
     index:
-      confirm_delete: Bist Du sicher?
       new: Neue Kategorie anlegen
       title: Artikelkategorien
     new:
@@ -337,7 +363,6 @@ de:
       notice: Die Kategorie wurde aktualisiert
   articles:
     article:
-      confirm_delete: Bist du sicher?
       last_update: 'zuletzt geändert: %{last_update} | Brutto: %{gross_price}'
     articles:
       confirm_delete: Willst Du wirklich alle gewählten Artikel löschen?
@@ -473,6 +498,9 @@ de:
       minimum_balance: Mitglieder können nur bestellen, wenn ihr Kontostand mindestens diesem Betrag entspricht.
       name: Der Name Deiner Foodcoop
       order_schedule:
+        boxfill:
+          recurr: Standarddatum für den Begin der Kistenauffüllphase
+          time: Standardzeit für den Begin der Kistenauffüllphase
         ends:
           recurr: Standarddatum für den Bestellschluss
           time: Standardzeit für den Bestellschluss
@@ -490,6 +518,10 @@ de:
       tax_default: Standard Mehrwertsteuersatz für neue Artikel
       tolerance_is_costly: Eine möglichst große Menge im Rahmen der Tolerenz bestellen. Wenn dies nicht aktiviert ist, wird im Rahmen der Toleranz nur so viel bestellt, dass damit komplette Einheiten (Boxen) bestellt werden können. Die Option wirkt sich auch auf die Toleranz des Gesamtpreises einer offenen Mitgliederbestellung aus.
       use_apple_points: Wenn das Apfel Punktesystem aktiviert ist, ist es erforderlich, dass Mitglieder Aufgaben erledigen um bestellen zu können.
+      use_boxfill: Wenn aktiviert, können Benutzer nahe am Ende der Bestellung diese nur mehr so verändern, dass sich die Gesamtsumme erhöht. Dies hilft beim auffüllen der verbleibenden Kisten. Es muss trotzdem noch das Kistenauffülldatum bei der Bestellung gesetzt werden.
+      use_current_orders: Aktiviere Plugin zur erweiterten Bearbeitung laufender Bestellungen. Dies erlaubt Mitgliedern mit Bestellrechten, mehrere Bestellungen gleichzeitig zu bearbeiten (in drei zusätzlichen Ansichten unter dem Menüpunkt Bestellungen). Insbesondere hilfreich für Anpassungen an Liefertagen.
+      use_documents: Einfache Dokumentenverwaltung aktivieren
+      use_iban: Zusätzlich Feld für die internationale Kontonummer bei Benutzern und Lieferanten anzeigen
       use_messages: Den Mitgliedern erlauben, miteinander innerhalb Foodsoft zu kommunizieren
       use_nick: Benutzernamen anstatt reale Namen zeigen und verwenden, jeder Benutzer muss dazu einen Benutzernamen (Spitznamen) haben.
       use_wiki: "Änderbare Wiki Seiten aktivieren"
@@ -507,6 +539,7 @@ de:
       currency_unit: Währung
       custom_css: Angepasstes CSS
       default_locale: Standardsprache
+      disable_invite: Einladungen deaktivieren
       email_from: Absenderadresse
       email_replyto: Antwortadresse
       email_sender: Senderadresse
@@ -518,6 +551,9 @@ de:
       minimum_balance: Minimaler Kontostand
       name: Name
       order_schedule:
+        boxfill:
+          recurr: Kistenauffüllen ab
+          time: Zeit
         ends:
           recurr: Bestellschluss
           time: Zeit
@@ -534,6 +570,10 @@ de:
       time_zone: Zeitzone
       tolerance_is_costly: Bestelltoleranz maximal ausnutzen, um möglichst große Mengen zu bestellen
       use_apple_points: Apfelpunkte verwenden
+      use_boxfill: Kistenauffüllphase
+      use_current_orders: Erweiterte Bearbeitungsansicht
+      use_documents: Dokumente verwenden
+      use_iban: IBAN verwenden
       use_messages: Nachrichten
       use_nick: Benutzernamen verwenden
       use_wiki: Wiki verwenden
@@ -547,6 +587,54 @@ de:
       others: Sonstiges
       payment: Finanzen
       tasks: Aufgaben
+  current_orders:
+    articles:
+      article:
+        counts: "%{ordergroups} Bestellgruppen bestellten %{articles} verschiedene Produkte."
+        no_selection: Wähle einen Artikel, um anzuzeigen wer ihn bestellt hat oder downloade eine Abholliste rechts.
+      article_info:
+        from: von %{supplier}
+        origin_in: in %{origin}
+        supplied_and_made_by: produziert von %{manufacturer}
+        supplied_by: von %{supplier}
+        supplied_by_made_by: von %{supplier} produziert von %{manufacturer}
+        unit: pro %{unit}
+      form:
+        article_placeholder: Artikel suchen...
+        current_orders: Alle Aktuelle Bestellungen
+      index:
+        title: Artikel verteilen
+      ordergroups:
+        add_new: Bestellgruppe hinzufügen
+        piece: St.
+        unit: Einheit
+      show:
+        title: "%{name}"
+    group_orders:
+      index:
+        title: Deine Aktuelle Bestellungen
+    navigation:
+      articles: Verteilen
+      ordergroups: Gruppenbestellungen
+      receive: In Empfang nehmen
+    ordergroups:
+      articles:
+        add_new: Artikel hinzufügen...
+        no_selection: Wahl eine Bestellgruppe um die Artikel zu zeigen.
+      form:
+        ordergroup_placeholder: Bestellgruppe auswählen...
+      index:
+        title: Artikel für Bestellgruppe
+      payment_bar:
+        account_balance: Kontostand
+        new_transaction: Neue Transaktion
+        payment: 'Zahlung:'
+      show:
+        title: Artikel für %{name}
+    orders:
+      receive:
+        no_finished_orders: Jetzt gibt es keine Bestellungen in Empfang zu nehmen.
+        title: Bestellungen in Empfang nehmen
   deliveries:
     add_stock_change:
       how_many_units: Wie viele Einheiten (%{unit}) des Artikels »%{name}« liefern?
@@ -588,6 +676,24 @@ de:
     update:
       notice: Lieferung wurde aktualisiert.
   documents:
+    create:
+      error: 'Dokument konnte nicht erstellt werden: %{error}'
+      notice: Dokument wurde erstellt
+    destroy:
+      error: 'Dokument konnt nicht gelöscht werden: %{error}'
+      no_right: Du hast nicht genügend Rechte um die Datei zu löschen
+      notice: Dokument wurde gelöscht
+    index:
+      new: Neues Dokument anlegen
+      title: Dokumente
+    multiple_orders_by_articles:
+      filename: Artikelsortierung aktueller Bestellungen
+      title: Aktuelle Bestellungen - Artikelsortierung
+    multiple_orders_by_groups:
+      filename: Gruppensortierung aktueller Bestellungen
+      title: Aktuelle Bestellungen - Gruppensortierung
+    new:
+      title: Neues Dokument
     order_by_articles:
       filename: Bestellung %{name}-%{date} - Artikelsortierung
       rows:
@@ -637,12 +743,12 @@ de:
     general_again: Ein Fehler ist aufgetreten. Bitte erneut versuchen.
     general_msg: 'Ein Fehler ist aufgetreten: %{msg}'
     internal_server_error:
-      text1: 
-      text2: 
-      title: 
+      text1: Ein unerwarteter Fehler ist aufgretreten. Entschuldigung!
+      text2: Wir wurden benachrichtigt. Fall das Problem weiterhin besteht, gib uns bitte bescheid.
+      title: Interner Server Fehler
     not_found:
-      text: 
-      title: 
+      text: Diese Seite existiert anscheinend nicht. Entschuldigung!
+      title: Seite nicht gefunden
   feedback:
     create:
       notice: Das Feedback wurde erfolgreich verschickt. Vielen Dank!
@@ -746,6 +852,7 @@ de:
         paragraph: Hier kannst du der Bestellgruppe <b>%{name}</b> Geld gutschreiben/abziehen.
         title: Neue Transaktion
       new_collection:
+        add_all_ordergroups: Alle Bestellgruppen hinzufügen
         new_ordergroup: Weitere Bestellgruppe hinzufügen
         save: Transaktionen speichern
         sidebar: Hier kannst Du mehrere Konten gleichzeitig aktualsieren. Z.B. alle Überweisungen der Bestellgruppen aus einem Kontoauszug.
@@ -767,14 +874,11 @@ de:
     invoices:
       edit:
         title: Rechnung bearbeiten
+      form:
+        attachment_hint: Es sind nur JPEG und PDF erlaubt.
       index:
         action_new: Neue Rechnung anlegen
         title: Rechnungen
-      invoices:
-        confirm_delete: Bist Du sicher?
-      linked: Diese Rechnung ist mit %{what_link} verknüpft.
-      linked_delivery: einer Lieferung
-      linked_order: einer Bestellung
       new:
         title: Neue Rechnung anlegen
       show:
@@ -797,6 +901,8 @@ de:
         only_active: Nur aktive
         only_active_desc: "(mindestens einmal in den letzten 3 Monaten bestellt)"
         title: Bestellgruppen
+      ordergroups:
+        break: "%{start} - %{end}"
     users:
       index:
         body: "<p>Hier kannst Du den Mitgliedern Deiner Foodcoop eine Nachricht schreiben. Damit Deine Kontaktdaten einzusehen sind, musst Du sie unter %{profile_link} freigeben.</p>"
@@ -898,10 +1004,15 @@ de:
       role_admin: Admin
       role_article_meta: Artikel
       role_finance: Finanzen
+      role_invoices: Rechnungen
       role_orders: Bestellung
       role_suppliers: Lieferanten
       show_google_maps: Show it on Google maps
       sort_by: Nach %{text} sortieren
+    current_orders:
+      pay_amount: zu bezahlen %{amount}
+      pay_done: vollständig bezahlt
+      pay_none: nichts zu bezahlen
     deliveries:
       new_invoice: Rechnung anlegen
       show_invoice: Rechnung anzeigen
@@ -931,7 +1042,10 @@ de:
       due_date_format: "%A, %d. %b"
       messages:
         title: Neueste Nachrichten
-        view_all: Alle Nachrichten einsehen
+        view_all:
+          messages: Nachrichten
+          text: "%{messages} oder %{threads} anzeigen"
+          threads: Nachrichtenverläufe
       my_ordergroup:
         funds: "| Verfügbares Guthaben:"
         last_update: Letzte Aktualisierung vor %{when}
@@ -946,9 +1060,8 @@ de:
         desc: Du bis für Aufgaben verantwortlich.
         title: Aufgaben übernehmen
       tasks_open:
-        action: offene Aufgabe(n)
-        desc: Es gibt %{size}
         title: Offene Aufgaben
+        view_all: Alle Aufgaben anzeigen
       title: Startseite
       your_tasks: Deine Aufgaben
     no_ordergroups: Leider bist Du kein Mitglied einer Bestellgruppe
@@ -1001,6 +1114,11 @@ de:
       body: "<p>Hier kannst du eine Person in die Gruppe <b>%{group}</b> einladen, die noch nicht Mitglied der Foodcoop ist.</p>"
     success: Benutzer/in wurde erfolgreich eingeladen.
   js:
+    current_orders:
+      articles:
+        above: "%{count} mehr<br>als verfügbar"
+        below: "%{count} übrig"
+        equal: alle verteilt
     ordering:
       confirm_change: "Änderungen an dieser Bestellung gehen verloren, wenn zu einer anderen Bestellung gewechselt wird. Möchtest Du trotzdem wechseln?"
   layouts:
@@ -1162,6 +1280,10 @@ de:
   model:
     delivery:
       each_stock_article_must_be_unique: Lieferung darf jeden Lagerartikel höchstens einmal auflisten.
+    group_order:
+      stock_ordergroup_name: Lager (%{user})
+    invoice:
+      invalid_mime: hat einen ungültigen MIME-Typ (%{mime})
     membership:
       no_admin_delete: Mitgliedschaft kann nicht beendet werden. Du bist die letzte Administratorin
     order_article:
@@ -1184,6 +1306,7 @@ de:
       suppliers: Lieferanten/Artikel
       title: Artikel
     dashboard: Dashboard
+    documents: Dokumente
     finances:
       accounts: Konten verwalten
       balancing: Bestellungen abrechnen
@@ -1268,8 +1391,10 @@ de:
       title: Bestellungen verwalten
     model:
       close_direct_message: Die Bestellung wurde abgechlossen, ohne die Mitgliederkonten zu belasten.
+      error_boxfill_before_ends: muss nach dem Kistenauffülldatum liegen (oder leer bleiben)
       error_closed: Bestellung wurde schon abgerechnet
       error_nosel: Es muss mindestens ein Artikel ausgewählt sein.
+      error_starts_before_boxfill: muss nach dem Bestellstart liegen (oder leer bleiben)
       error_starts_before_ends: muss nach dem Bestellstart liegen (oder leer bleiben)
       notice_close: 'Bestellung: %{name}, bis %{ends}'
       stock: Lager
@@ -1298,7 +1423,12 @@ de:
       confirm_end: |-
         Willst Du wirklich die Bestellung %{order} beenden?
         Es gibt kein zurück.
-      description1: "%{state} Bestellung von %{supplier} angelegt von %{who}, läuft von %{starts} bis %{ends}."
+      create_invoice: Rechnung anlegen
+      description1_order: "%{state} Bestellung von %{supplier} angelegt von %{who},"
+      description1_period:
+        pickup: und kann am %{pickup} abgeholt werden
+        starts: läuft von %{starts}
+        starts_ends: läuft von %{starts} bis %{ends}
       description2: "%{ordergroups} haben %{article_count} Artikel mit einem Gesamtwert von %{net_sum} / %{gross_sum} (netto / brutto) bestellt."
       download:
         article_pdf: Artikel PDF
@@ -1315,8 +1445,10 @@ de:
         default: Suche nach Artikeln ...
         groups: Suche nach Bestellgruppen ...
       search_reset: Suche zurücksetzen
+      show_invoice: Rechnung anzeigen
       sort_article: Sortiert nach Artikeln
       sort_group: Sortiert nach Gruppen
+      stock_order: Lagerbestellung
       title: 'Bestellung: %{name}'
       warn_not_closed: Achtung, Bestellung wurde noch nicht abgerechnet.
     state:
@@ -1434,6 +1566,7 @@ de:
       access: Zugriff auf
       activated: aktiviert
       apple_limit: "Äpfel-Bestellbeschränkung"
+      break: von %{start} bis %{end}
       deactivated: deaktiviert
     group_form_fields:
       search: Suche ...
@@ -1445,6 +1578,14 @@ de:
       title: Laufende Bestellungen
       total_sum: Gesamtsumme
       who_ordered: Wer hat bestellt?
+    task_list:
+      accept_task: Aufgabe übernehmen
+      done: Erledigt
+      done_q: Erledigt?
+      mark_done: Aufgabe als erledigt markieren
+      reject_task: Aufgabe ablehnen
+      who: Wer machts?
+      who_hint: "(Wie viele werden noch benötigt?)"
     user_form_fields:
       contact_address_hint: Die Adresse deiner Bestellgruppe. Wenn du sie aktualisierst, wird sie auch bei den anderen Mitgliedern deiner Bestellgruppe aktualisiert.
     workgroup_members:
@@ -1569,8 +1710,6 @@ de:
       new_quantity: Neuer Bestand
       reason: Ereignis
       stock_changes: Verlauf des Lagerbestands
-    stock_article:
-      confirm_delete: Möchtest Du den Lagerartikel %{name} wirklich löschen?
     update:
       notice: Lagerartikel »%{name}« aktualisiert.
   suppliers:
@@ -1602,7 +1741,6 @@ de:
       supplier: Lieferantin
       title: Externe Listen
     show:
-      confirm_delete: Bist Du sicher?
       last_deliveries: Letzte Lieferungen
       last_orders: Letzte Bestellungen
       new_delivery: Neue Lieferung anlegen
@@ -1635,14 +1773,6 @@ de:
       show_group_tasks: Gruppenaufgaben anzeigen
       title: Aufgaben
       title_non_group: Aufgaben für alle!
-    list:
-      accept_task: Aufgabe übernehmen
-      done: Erledigt
-      done_q: Erledigt?
-      mark_done: Aufgabe als erledigt markieren
-      reject_task: Aufgabe ablehnen
-      who: Wer machts?
-      who_hint: "(Wie viele werden noch benötigt?)"
     nav:
       all_tasks: Alle Aufgaben
       archive: Erledigte Aufgaben (Archiv)
@@ -1681,17 +1811,21 @@ de:
       title_all: Alle Aufgaben der Gruppe
   ui:
     actions: Aktionen
-    back: Züruck
+    back: Zurück
     cancel: Abbrechen
     close: Schließen
-    copy: kopieren
+    confirm_delete: Willst du %{name} wirklich löschen?
+    confirm_restore: Willst du %{name} wirklich wiederherstellen?
+    copy: Kopieren
     delete: Löschen
+    download: Herunterladen
     edit: Bearbeiten
     marks:
       close: "&times;"
       success: <i class="icon icon-ok"></i>
     or_cancel: oder abbrechen
     please_wait: Bitte warten...
+    restore: Wiederherstellen
     save: Speichern
     show: Anzeigen
   views:

@@ -10,13 +10,28 @@ class PeriodicTaskGroup < ActiveRecord::Base
   def create_next_task
     template_task = tasks.first
     self.next_task_date ||= template_task.due_date + period_days
-    
+
     next_task = template_task.dup
-    next_task.due_date = next_task_date    
+    next_task.due_date = next_task_date
+    next_task.done = false
     next_task.save
 
     self.next_task_date += period_days
     self.save
+  end
+
+  def create_tasks_until(create_until)
+    if has_next_task?
+      while next_task_date.nil? || next_task_date < create_until
+        create_next_task
+      end
+    end
+  end
+
+  def create_tasks_for_upfront_days
+    create_until = Date.today + FoodsoftConfig[:tasks_upfront_days].to_i + 1
+    create_tasks_until create_until
+    create_until
   end
 
   def exclude_tasks_before(task)

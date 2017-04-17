@@ -1,3 +1,50 @@
+# Foodsoft 4.5.2
+(17 April 2017)
+
+* The messages plugin can now receive replies by email when setup (#459)
+* Add Copy button for settled orders (#383)
+* Fix to not send messages to deleted users (462)
+* Fix to allow adding an invoice to finished orders (925727)
+* Fix to make sure new periodic tasks aren't done (#454)
+* Fixes for several security vulnerabilities
+
+# Foodsoft 4.5.1
+(12 August 2016)
+
+* Fix adding articles in the delivery and receive screens
+* Fix overview of all wiki pages
+
+# Foodsoft 4.5.0
+(28 June 2016)
+
+* Improve Docker setup. (#399)
+* Speedup generation of most PDFs (#433)
+* New plugin for working with current orders (closed but not finished) (#373)
+* New plugin for sharing documents (#353)
+* Allow attaching an image or PDF to an invoice (#345)
+* Add an expected delivery / pickup date to orders (#355)
+* Add an optional box-fill phase to orders (#387)
+* Add color marking to items in group orders that have missing items (#365)
+* Allow ordering articles for stock as part of a regular order (alternative for deliveries)
+* Allow ordergroups to have a break period (like holiday) (#404)
+* Add message groups (#402)
+* Add message threads (#394)
+* Add invoice role for submitting invoices (1315103)
+* Improvements for wiki pages (#419, #420)
+* Allow disabling invitation functionality (#416)
+* Allow adding all ordergroups when creating multiple financial transactions (#414)
+* Allow message replies using emails (4e35e2d)
+* User-interface improvements (#417, #411, #392, #391, #388, e.a.)
+* Soft-delete users to fix some problems (#386, #406)
+* Show error pages in regular layout when possible (#375)
+* Fix some problems with stock articles
+* Fix order schedule not being able to be cleared
+* Fix unicode characters in PDF documents
+
+If you've used the Docker configuration before, please make sure to delete
+the old files (`sudo rm -Rf tmp/* log/*`) and rebuild the container with
+`docker-compose build`.
+
 # Foodsoft 4.4.1
 (5 Jun 2015)
 
