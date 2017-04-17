@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150923190747) do
+ActiveRecord::Schema.define(version: 20161001000000) do
 
   create_table "article_categories", force: :cascade do |t|
     t.string "name",        limit: 255, default: "", null: false
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.date     "delivered_on"
     t.datetime "created_at"
     t.text     "note",         limit: 65535
+    t.integer  "invoice_id"
   end
 
   add_index "deliveries", ["supplier_id"], name: "index_deliveries_on_supplier_id", using: :btree
@@ -109,7 +110,7 @@ ActiveRecord::Schema.define(version: 20150923190747) do
   add_index "group_order_articles", ["order_article_id"], name: "index_group_order_articles_on_order_article_id", using: :btree
 
   create_table "group_orders", force: :cascade do |t|
-    t.integer  "ordergroup_id",      limit: 4,                         default: 0, null: false
+    t.integer  "ordergroup_id",      limit: 4
     t.integer  "order_id",           limit: 4,                         default: 0, null: false
     t.decimal  "price",                        precision: 8, scale: 2, default: 0, null: false
     t.integer  "lock_version",       limit: 4,                         default: 0, null: false
@@ -139,6 +140,9 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.text     "stats",                    limit: 65535
     t.integer  "next_weekly_tasks_number", limit: 4,                              default: 8
     t.boolean  "ignore_apple_restriction",                                        default: false
+    t.boolean  "role_invoices",                                                   default: false, null: false
+    t.date     "break_start"
+    t.date     "break_end"
   end
 
   add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
@@ -155,8 +159,6 @@ ActiveRecord::Schema.define(version: 20150923190747) do
 
   create_table "invoices", force: :cascade do |t|
     t.integer  "supplier_id",    limit: 4
-    t.integer  "delivery_id",    limit: 4
-    t.integer  "order_id",       limit: 4
     t.string   "number",         limit: 255
     t.date     "date"
     t.date     "paid_on"
@@ -166,9 +168,11 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.decimal  "deposit_credit",               precision: 8, scale: 2, default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "created_by_user_id"
+    t.string   "attachment_mime"
+    t.binary   "attachment_data"
   end
 
-  add_index "invoices", ["delivery_id"], name: "index_invoices_on_delivery_id", using: :btree
   add_index "invoices", ["supplier_id"], name: "index_invoices_on_supplier_id", using: :btree
 
   create_table "memberships", force: :cascade do |t|
@@ -188,6 +192,8 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.datetime "created_at"
     t.integer  "reply_to",       limit: 4
     t.integer  "group_id",       limit: 4
+    t.string   "salt"
+    t.binary   "received_email"
   end
 
   create_table "order_articles", force: :cascade do |t|
@@ -225,6 +231,8 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.decimal  "foodcoop_result",                  precision: 8, scale: 2
     t.integer  "created_by_user_id", limit: 4
     t.datetime "boxfill"
+    t.date     "pickup"
+    t.integer  "invoice_id"
   end
 
   add_index "orders", ["state"], name: "index_orders_on_state", using: :btree
@@ -309,6 +317,7 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.string   "min_order_quantity", limit: 255
     t.datetime "deleted_at"
     t.string   "shared_sync_method", limit: 255
+    t.string   "iban"
   end
 
   add_index "suppliers", ["name"], name: "index_suppliers_on_name", unique: true, using: :btree
@@ -343,6 +352,8 @@ ActiveRecord::Schema.define(version: 20150923190747) do
     t.datetime "reset_password_expires"
     t.datetime "last_login"
     t.datetime "last_activity"
+    t.datetime "deleted_at"
+    t.string   "iban"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

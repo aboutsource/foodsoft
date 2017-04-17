@@ -60,7 +60,7 @@ class FoodsoftConfig
     # @param filename [String] Override configuration file
     def init(filename = APP_CONFIG_FILE)
       Rails.logger.info "Loading app configuration from #{APP_CONFIG_FILE}"
-      APP_CONFIG.clear.merge! YAML.load(File.read(File.expand_path(filename, Rails.root)))
+      APP_CONFIG.clear.merge! YAML.load(ERB.new(File.read(File.expand_path(filename, Rails.root))).result)
       # Gather program-default configuration
       self.default_config = get_default_config
       # Load initial config from development or production
@@ -78,6 +78,10 @@ class FoodsoftConfig
     def select_foodcoop(foodcoop)
       set_config foodcoop
       setup_database
+    end
+
+    def select_multifoodcoop(foodcoop)
+      select_foodcoop foodcoop if config[:multi_coop_install]
     end
 
     # Return configuration value for the currently selected foodcoop.
@@ -134,15 +138,20 @@ class FoodsoftConfig
       keys.map(&:to_s).uniq
     end
 
+    # @return [Array<String>] Valid names of foodcoops.
+    def foodcoops
+      if config[:multi_coop_install]
+        APP_CONFIG.keys.reject { |coop| coop =~ /^(default|development|test|production)$/ }
+      else
+        [config[:default_scope]]
+      end
+    end
+
     # Loop through each foodcoop and executes the given block after setup config and database
     def each_coop
-      if config[:multi_coop_install]
-        APP_CONFIG.keys.reject { |coop| coop =~ /^(default|development|test|production)$/ }.each do |coop|
-          select_foodcoop coop
-          yield coop
-        end
-      else
-        yield config[:default_scope]
+      foodcoops.each do |coop|
+        select_multifoodcoop coop
+        yield coop
       end
     end
 

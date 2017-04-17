@@ -13,6 +13,9 @@ class MessagesController < ApplicationController
 
     if @message.reply_to
       original_message = Message.find(@message.reply_to)
+      if original_message.reply_to
+        @message.reply_to = original_message.reply_to
+      end
       if original_message.is_readable_for?(current_user)
         @message.add_recipients [original_message.sender]
         @message.group_id = original_message.group_id
@@ -21,7 +24,7 @@ class MessagesController < ApplicationController
         @message.body = I18n.t('messages.model.reply_header', :user => original_message.sender.display, :when => I18n.l(original_message.created_at, :format => :short)) + "\n"
         original_message.body.each_line{ |l| @message.body += I18n.t('messages.model.reply_indent', :line => l) }
       else
-        redirect_to new_message_url, alert: 'Nachricht ist privat!'
+        redirect_to new_message_url, alert: I18n.t('messages.new.error_private')
       end
     end
   end
@@ -43,5 +46,9 @@ class MessagesController < ApplicationController
     unless @message.is_readable_for?(current_user)
       redirect_to messages_url, alert: 'Nachricht ist privat!'
     end
+  end
+
+  def thread
+    @messages = Message.thread(params[:id]).order(:created_at)
   end
 end

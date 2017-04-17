@@ -1,5 +1,6 @@
 # A GroupOrder represents an Order placed by an Ordergroup.
 class GroupOrder < ActiveRecord::Base
+  include FindEachWithOrder
 
   attr_accessor :group_order_articles_attributes
 
@@ -10,7 +11,6 @@ class GroupOrder < ActiveRecord::Base
   belongs_to :updated_by, :class_name => "User", :foreign_key => "updated_by_user_id"
 
   validates_presence_of :order_id
-  validates_presence_of :ordergroup_id
   validates_numericality_of :price
   validates_uniqueness_of :ordergroup_id, :scope => :order_id   # order groups can only order once per order
 
@@ -22,7 +22,7 @@ class GroupOrder < ActiveRecord::Base
   # Generate some data for the javascript methods in ordering view
   def load_data
     data = {}
-    data[:available_funds] = ordergroup.get_available_funds(self)
+    data[:available_funds] = ordergroup.nil? ? BigDecimal.new('+Infinity') : ordergroup.get_available_funds(self)
 
     # load prices and other stuff....
     data[:order_articles] = {}
@@ -85,6 +85,10 @@ class GroupOrder < ActiveRecord::Base
       save_group_order_articles
       update_price!
     end
+  end
+
+  def ordergroup_name
+    ordergroup ? ordergroup.name : I18n.t('model.group_order.stock_ordergroup_name', :user => updated_by.try(:name) || '?')
   end
 
 end

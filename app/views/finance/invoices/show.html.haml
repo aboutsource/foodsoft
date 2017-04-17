@@ -1,17 +1,37 @@
 - title t('.title', number: @invoice.number)
 
+- total = 0
+
+%p
+  %b= heading_helper(Invoice, :created_at) + ':'
+  = format_time(@invoice.created_at)
+%p
+  %b= heading_helper(Invoice, :created_by) + ':'
+  = show_user(@invoice.created_by)
 %p
   %b= heading_helper(Invoice, :supplier) + ':'
   = @invoice.supplier.name
 
-- if @invoice.delivery
+- if @invoice.deliveries.any?
   %p
-    %b= heading_helper(Invoice, :delivery) + ':'
-    = t('finance.invoices.linked', what_link: link_to(t('finance.invoices.linked_delivery'), [@invoice.supplier,@invoice.delivery])).html_safe
-- if @invoice.order
+    %b= heading_helper(Invoice, :deliveries) + ':'
+    %span><
+      - @invoice.deliveries.order(:delivered_on).each_with_index do |delivery, index|
+        - sum = delivery.sum
+        - total += sum
+        = ', ' if index > 0
+        = link_to format_date(delivery.delivered_on), [delivery.supplier,delivery]
+        = ' (' + number_to_currency(sum) + ')'
+- if @invoice.orders.any?
   %p
-    %b= heading_helper(Invoice, :order) + ':'
-    = t('finance.invoices.linked', what_link: link_to(t('finance.invoices.linked_order'), @invoice.order)).html_safe
+    %b= heading_helper(Invoice, :orders) + ':'
+    %span><
+      - @invoice.orders.order(:ends).each_with_index do |order, index|
+        - sum = order.sum
+        - total += sum
+        = ', ' if index > 0
+        = link_to format_date(order.ends), new_finance_order_path(order_id: order)
+        = ' (' + number_to_currency(sum) + ')'
 
 %p
   %b= heading_helper(Invoice, :number) + ':'
@@ -32,8 +52,20 @@
   %b= heading_helper(Invoice, :deposit_credit) + ':'
   = number_to_currency @invoice.deposit_credit
 %p
+  %b= heading_helper(Invoice, :net_amount) + ':'
+  = number_to_currency @invoice.net_amount
+- if @invoice.deliveries.any? || @invoice.orders.any?
+  %p
+    %b= heading_helper(Invoice, :total) + ':'
+    = number_to_currency total
+%p
+  %b= heading_helper(Invoice, :attachment) + ':'
+  - if @invoice.attachment_data
+    = link_to t('ui.download'), finance_invoice_attachment_path(@invoice)
+%p
   %b= heading_helper(Invoice, :note) + ':'
   =h @invoice.note
 
-= link_to t('ui.edit'), edit_finance_invoice_path(@invoice)
+- if @invoice.user_can_edit?(current_user)
+  = link_to t('ui.edit'), edit_finance_invoice_path(@invoice), class: 'btn'
 = link_to t('ui.or_cancel'), finance_invoices_path
